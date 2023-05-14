@@ -66,12 +66,11 @@ def sspd(traj_1, traj_2, type_d="euclidean"):
     if dim_1 != 2 or dim_2 != 2:
         raise ValueError("Trajectories should be in 2D. t1 is %dD and t2 is %d given" % (dim_1, dim_2))
 
-    if not (type_d in ["spherical", "euclidean"]):
+    if type_d not in ["spherical", "euclidean"]:
         raise ValueError("The type_d argument should be 'euclidean' or 'spherical'\ntype_d given is : " + type_d)
 
     dist_func = METRIC_DIC[type_d]["sspd"]
-    dist = dist_func(traj_1, traj_2)
-    return dist
+    return dist_func(traj_1, traj_2)
 
 
 def sowd_grid(traj_1, traj_2, type_d="euclidean", converted=None, precision=None):
@@ -110,7 +109,7 @@ def sowd_grid(traj_1, traj_2, type_d="euclidean", converted=None, precision=None
     if dim_1 != 2 or dim_2 != 2:
         raise ValueError("Trajectories should be in 2D. t1 is %dD and t2 is %d given" % (dim_1, dim_2))
 
-    if not (type_d in ["spherical", "euclidean"]):
+    if type_d not in ["spherical", "euclidean"]:
         raise ValueError("The type_d argument should be 'euclidean' or 'spherical'\ntype_d given is : " + type_d)
 
     if type_d == "euclidean" and not converted:
@@ -132,8 +131,7 @@ def sowd_grid(traj_1, traj_2, type_d="euclidean", converted=None, precision=None
         cells_list = [np.array(cells_list_[0])[:, :2], np.array(cells_list_[1])[:, :2]]
 
     dist_func = METRIC_DIC[type_d]["sowd_grid"]
-    dist = dist_func(cells_list[0], cells_list[1])
-    return dist
+    return dist_func(cells_list[0], cells_list[1])
 
 
 def frechet(traj_1, traj_2, type_d="euclidean"):
@@ -168,8 +166,7 @@ def frechet(traj_1, traj_2, type_d="euclidean"):
         raise ValueError("The type_d argument should be 'euclidean'\ntype_d given is : " + type_d)
 
     dist_func = METRIC_DIC[type_d]["frechet"]
-    dist = dist_func(traj_1, traj_2)
-    return dist
+    return dist_func(traj_1, traj_2)
 
 
 def discret_frechet(traj_1, traj_2, type_d="euclidean"):
@@ -203,8 +200,7 @@ def discret_frechet(traj_1, traj_2, type_d="euclidean"):
         raise ValueError("The type_d argument should be 'euclidean'\ntype_d given is : " + type_d)
 
     dist_func = METRIC_DIC[type_d]["discret_frechet"]
-    dist = dist_func(traj_1, traj_2)
-    return dist
+    return dist_func(traj_1, traj_2)
 
 
 def hausdorff(traj_1, traj_2, type_d="euclidean"):
@@ -241,12 +237,11 @@ def hausdorff(traj_1, traj_2, type_d="euclidean"):
     if dim_1 != 2 or dim_2 != 2:
         raise ValueError("Trajectories should be in 2D. t1 is %dD and t2 is %d given" % (dim_1, dim_2))
 
-    if not (type_d in ["spherical", "euclidean"]):
+    if type_d not in ["spherical", "euclidean"]:
         raise ValueError("The type_d argument should be 'euclidean' or 'spherical'\ntype_d given is : " + type_d)
 
     dist_func = METRIC_DIC[type_d]["hausdorff"]
-    dist = dist_func(traj_1, traj_2)
-    return dist
+    return dist_func(traj_1, traj_2)
 
 
 def dtw(traj_1, traj_2, type_d="euclidean"):
@@ -279,12 +274,11 @@ def dtw(traj_1, traj_2, type_d="euclidean"):
     if dim_1 != 2 or dim_2 != 2:
         raise ValueError("Trajectories should be in 2D. t1 is %dD and t2 is %d given" % (dim_1, dim_2))
 
-    if not (type_d in ["spherical", "euclidean"]):
+    if type_d not in ["spherical", "euclidean"]:
         raise ValueError("The type_d argument should be 'euclidean' or 'spherical'\ntype_d given is : " + type_d)
 
     dist_func = METRIC_DIC[type_d]["dtw"]
-    dist = dist_func(traj_1, traj_2)
-    return dist
+    return dist_func(traj_1, traj_2)
 
 
 def lcss(traj_1, traj_2, type_d="euclidean", eps=200):
@@ -317,12 +311,11 @@ def lcss(traj_1, traj_2, type_d="euclidean", eps=200):
     if dim_1 != 2 or dim_2 != 2:
         raise ValueError("Trajectories should be in 2D. t1 is %dD and t2 is %d given" % (dim_1, dim_2))
 
-    if not (type_d in ["spherical", "euclidean"]):
+    if type_d not in ["spherical", "euclidean"]:
         raise ValueError("The type_d argument should be 'euclidean' or 'spherical'\ntype_d given is : " + type_d)
 
     dist_func = METRIC_DIC[type_d]["lcss"]
-    dist = dist_func(traj_1, traj_2, eps)
-    return dist
+    return dist_func(traj_1, traj_2, eps)
 
 
 def edr(traj_1, traj_2, type_d="euclidean", eps=200):
@@ -356,12 +349,11 @@ def edr(traj_1, traj_2, type_d="euclidean", eps=200):
     if dim_1 != 2 or dim_2 != 2:
         raise ValueError("Trajectories should be in 2D. t1 is %dD and t2 is %d given" % (dim_1, dim_2))
 
-    if not (type_d in ["spherical", "euclidean"]):
+    if type_d not in ["spherical", "euclidean"]:
         raise ValueError("The type_d argument should be 'euclidean' or 'spherical'\ntype_d given is : " + type_d)
 
     dist_func = METRIC_DIC[type_d]["edr"]
-    dist = dist_func(traj_1, traj_2, eps)
-    return dist
+    return dist_func(traj_1, traj_2, eps)
 
 
 def erp(traj_1, traj_2, type_d="euclidean", g=None):
@@ -400,16 +392,14 @@ def erp(traj_1, traj_2, type_d="euclidean", g=None):
         g = np.zeros(dim, dtype=float)
         warnings.warn("g parameter should be specified for metric erp. Default is ")
         print(g)
-    else:
-        if g.shape[0] != dim:
-            raise ValueError("g and trajectories in list should have same dimension")
+    elif g.shape[0] != dim:
+        raise ValueError("g and trajectories in list should have same dimension")
 
-    if not (type_d in ["spherical", "euclidean"]):
+    if type_d not in ["spherical", "euclidean"]:
         raise ValueError("The type_d argument should be 'euclidean' or 'spherical'\ntype_d given is : " + type_d)
 
     dist_func = METRIC_DIC[type_d]["erp"]
-    dist = dist_func(traj_1, traj_2, g)
-    return dist
+    return dist_func(traj_1, traj_2, g)
 
 
 # ####################
@@ -497,29 +487,44 @@ def pdist(traj_list, metric="sspd", type_d="euclidean", converted=None, precisio
 
     list_dim = [x.shape[1] if len(x.shape) > 1 else 1 for x in traj_list]
     nb_traj = len(traj_list)
-    if not (len(set(list_dim)) == 1):
+    if len(set(list_dim)) != 1:
         raise ValueError("All trajectories must have same dimesion !")
     dim = list_dim[0]
 
-    if not (metric in ["sspd", "dtw", "lcss", "hausdorff", "frechet", "discret_frechet", "sowd_grid",
-                       "erp", "edr"]):
+    if metric not in [
+        "sspd",
+        "dtw",
+        "lcss",
+        "hausdorff",
+        "frechet",
+        "discret_frechet",
+        "sowd_grid",
+        "erp",
+        "edr",
+    ]:
         raise ValueError("The metric argument should be 'sspd', 'dtw', 'lcss','erp','edr' 'hausdorff', 'frechet',"
                          "'discret_frechet' or 'sowd_grid' \nmetric given is : " + metric)
 
-    if not (type_d in ["spherical", "euclidean"]):
+    if type_d not in ["spherical", "euclidean"]:
         raise ValueError("The type_d argument should be 'euclidean' or 'spherical'\ntype_d given is : " + type_d)
 
     if type_d == "spherical" and (metric in ["frechet", "discret_frechet"]):
-        raise ValueError("spherical implementation for distance " + metric + " is not "
-                                                                             "disponible")
+        raise ValueError(
+            f"spherical implementation for distance {metric} is not disponible"
+        )
     if type_d == "euclidean" and (metric in ["sowd", "sowd_grid"]):
         if not (converted):
-            raise ValueError("Euclidean implementation for distance " +
-                             metric + " is not disponible if your data is not already converted in cell format")
+            raise ValueError(
+                f"Euclidean implementation for distance {metric} is not disponible if your data is not already converted in cell format"
+            )
 
     if verbose:
-       print(("Computing " + type_d + " distance " + metric + " for %d trajectories" % nb_traj))
+        print(
+            f"Computing {type_d} distance {metric}"
+            + " for %d trajectories" % nb_traj
+        )
     M = np.zeros(sum(range(nb_traj)))
+    im = 0
     dist = METRIC_DIC[type_d][metric]
     if metric.startswith("sowd_grid"):
         if converted is None:
@@ -539,7 +544,6 @@ def pdist(traj_list, metric="sspd", type_d="euclidean", converted=None, precisio
             cells_list = [np.array(x)[:, :2] for x in cells_list_]
             if verbose:
                 print("Cells conversion ok")
-        im = 0
         for i in range(nb_traj):
             cells_list_i = cells_list[i]
             for j in range(i + 1, nb_traj):
@@ -552,21 +556,18 @@ def pdist(traj_list, metric="sspd", type_d="euclidean", converted=None, precisio
             warnings.warn("g parameter should be specified for metric erp. Default is ")
             if verbose:
                 print(g)
-        else:
-            if g.shape[0] != dim:
-                raise ValueError("g and trajectories in list should have same dimension")
-        im = 0
+        elif g.shape[0] != dim:
+            raise ValueError("g and trajectories in list should have same dimension")
         for i in range(nb_traj):
             traj_list_i = traj_list[i]
             for j in range(i + 1, nb_traj):
                 traj_list_j = traj_list[j]
                 M[im] = dist(traj_list_i, traj_list_j, g)
                 im += 1
-    elif metric == "lcss" or metric == "edr":
+    elif metric in ["lcss", "edr"]:
         if eps is None:
             warnings.warn("eps parameter should be specified for metric 'lcss' and 'edr', default is 100 ")
             eps = 100
-        im = 0
         for i in range(nb_traj):
             traj_list_i = traj_list[i]
             for j in range(i + 1, nb_traj):
@@ -574,7 +575,6 @@ def pdist(traj_list, metric="sspd", type_d="euclidean", converted=None, precisio
                 M[im] = dist(traj_list_i, traj_list_j, eps)
                 im += 1
     else:
-        im = 0
         for i in range(nb_traj):
             traj_list_i = traj_list[i]
             for j in range(i + 1, nb_traj):
@@ -673,20 +673,32 @@ def cdist(traj_list_1, traj_list_2, metric="sspd", type_d="euclidean", converted
     nb_traj_1 = len(traj_list_1)
     list_dim_2 = [x.shape[1] for x in traj_list_2]
     nb_traj_2 = len(traj_list_2)
-    if not (len(set(list_dim_1 + list_dim_2)) == 1):
+    if len(set(list_dim_1 + list_dim_2)) != 1:
         raise ValueError("All trajectories must have same dimesion !")
     dim = list_dim_1[0]
 
-    if not (metric in ["sspd", "dtw", "lcss", "hausdorff", "frechet", "discret_frechet", "sowd_grid",
-                       "erp", "edr"]):
+    if metric not in [
+        "sspd",
+        "dtw",
+        "lcss",
+        "hausdorff",
+        "frechet",
+        "discret_frechet",
+        "sowd_grid",
+        "erp",
+        "edr",
+    ]:
         raise ValueError("The metric argument should be 'sspd', 'dtw', 'lcss','erp','edr' 'hausdorff', 'frechet',"
                          "'discret_frechet' or 'sowd_grid'\nmetric given is : " + metric)
 
-    if not (type_d in ["spherical", "euclidean"]):
+    if type_d not in ["spherical", "euclidean"]:
         raise ValueError("The type_d argument should be 'euclidean' or 'spherical'\ntype_d given is : " + type_d)
 
     if verbose:
-        print(("Computing " + type_d + " distance " + metric + " for %d and %d trajectories" % (nb_traj_1, nb_traj_2)))
+        print(
+            f"Computing {type_d} distance {metric}"
+            + " for %d and %d trajectories" % (nb_traj_1, nb_traj_2)
+        )
     M = np.zeros((nb_traj_1, nb_traj_2))
     dist = METRIC_DIC[type_d][metric]
     if metric.startswith("sowd_grid"):
@@ -716,15 +728,14 @@ def cdist(traj_list_1, traj_list_2, metric="sspd", type_d="euclidean", converted
             warnings.warn("g parameter should be specified for metric erp. Default is ")
             if verbose:
                 print(g)
-        else:
-            if g.shape[0] != dim:
-                raise ValueError("g and trajectories in list should have same dimension")
+        elif g.shape[0] != dim:
+            raise ValueError("g and trajectories in list should have same dimension")
         for i in range(nb_traj_1):
             traj_list_1_i = traj_list_1[i]
             for j in range(nb_traj_2):
                 traj_list_2_j = traj_list_2[j]
                 M[i, j] = dist(traj_list_1_i, traj_list_2_j, g)
-    elif metric == "lcss" or metric == "edr":
+    elif metric in ["lcss", "edr"]:
         if eps is None:
             warnings.warn("eps parameter should be specified for metric 'lcss' and 'edr', default is 100 ")
             eps = 100

@@ -23,8 +23,7 @@ def owd_grid_brut(traj_cell_1, traj_cell_2):
     for p1 in traj_cell_1:
         d = [np.linalg.norm(p1 - x) for x in traj_cell_2]
         D += min(d)
-    owd = D / n
-    return owd
+    return D / n
 
 
 def find_first_min_points(pt, n):
@@ -51,8 +50,7 @@ def find_first_min_points(pt, n):
             m_p = pt[i] < pt[i + 1] and pt[i] < pt[i - 1]
             min_points.append(m_p)
         min_points.append(pt[n - 1] < pt[n - 2])
-    min_point_index = np.where(np.array(min_points))[0]
-    return min_point_index
+    return np.where(np.array(min_points))[0]
 
 
 def owd_grid(traj_cell_1, traj_cell_2):
@@ -92,10 +90,7 @@ def owd_grid(traj_cell_1, traj_cell_2):
                 d.append(np.linalg.norm(p - pg))
             else:
                 if j == 0:
-                    if n_S_old == 1:
-                        ranges = list(range(0, n2))
-                    else:
-                        ranges = list(range(0, S_old[j + 1]))
+                    ranges = list(range(0, n2)) if n_S_old == 1 else list(range(0, S_old[j + 1]))
                 elif j == n_S_old - 1:
                     ranges = list(range(S_old[j - 1], n2))
                 else:
@@ -107,7 +102,7 @@ def owd_grid(traj_cell_1, traj_cell_2):
                         dist_forw = np.linalg.norm(traj_cell_2[igp + 1] - p) if igp != n2 - 1 else np.inf
                         dist = np.linalg.norm(pgp - p)
                         if dist < dist_back and dist < dist_forw:
-                            if not (igp in S):
+                            if igp not in S:
                                 S.append(igp)
                                 d.append(dist)
         S_old = S
@@ -129,17 +124,13 @@ def sowd_grid_brut(traj_cell_1, traj_cell_2):
 
 def sowd(traj_1, traj_2, precision=7, converted=False):
     if converted:
-        d = sowd_grid(traj_1, traj_2)
-    else:
-        cells_list, _, _ = linec.trajectory_set_grid([traj_1, traj_2], precision)
-        d = sowd_grid(cells_list[0], cells_list[1])
-    return d
+        return sowd_grid(traj_1, traj_2)
+    cells_list, _, _ = linec.trajectory_set_grid([traj_1, traj_2], precision)
+    return sowd_grid(cells_list[0], cells_list[1])
 
 
 def sowd_brut(traj_1, traj_2, precision=7, converted=False):
     if converted:
-        d = sowd_grid_brut(traj_1, traj_2)
-    else:
-        cells_list, _, _ = linec.trajectory_set_grid([traj_1, traj_2], precision)
-        d = sowd_grid_brut(cells_list[0], cells_list[1])
-    return d
+        return sowd_grid_brut(traj_1, traj_2)
+    cells_list, _, _ = linec.trajectory_set_grid([traj_1, traj_2], precision)
+    return sowd_grid_brut(cells_list[0], cells_list[1])

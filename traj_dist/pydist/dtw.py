@@ -32,8 +32,7 @@ def e_dtw(t0, t1):
     for i in np.arange(n0) + 1:
         for j in np.arange(n1) + 1:
             C[i, j] = eucl_dist(t0[i - 1], t1[j - 1]) + min(C[i, j - 1], C[i - 1, j - 1], C[i - 1, j])
-    dtw = C[n0, n1]
-    return dtw
+    return C[n0, n1]
 
 
 ######################
@@ -65,5 +64,4 @@ def s_dtw(t0, t1):
         for j in np.arange(n1) + 1:
             C[i, j] = great_circle_distance(t0[i - 1][0], t0[i - 1][1], t1[j - 1][0], t1[j - 1][1]) + \
                       min(C[i, j - 1], C[i - 1, j - 1], C[i - 1, j])
-    dtw = C[n0, n1]
-    return dtw
+    return C[n0, n1]

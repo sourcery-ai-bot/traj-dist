@@ -33,8 +33,7 @@ def e_lcss(t0, t1, eps):
                 C[i][j] = C[i - 1][j - 1] + 1
             else:
                 C[i][j] = max(C[i][j - 1], C[i - 1][j])
-    lcss = 1 - float(C[n0][n1]) / min([n0, n1])
-    return lcss
+    return 1 - float(C[n0][n1]) / min([n0, n1])
 
 
 ######################
@@ -68,5 +67,4 @@ def s_lcss(t0, t1, eps):
                 C[i][j] = C[i - 1][j - 1] + 1
             else:
                 C[i][j] = max(C[i][j - 1], C[i - 1][j])
-    lcss = 1 - float(C[n0][n1]) / min([n0, n1])
-    return lcss
+    return 1 - float(C[n0][n1]) / min([n0, n1])

@@ -29,13 +29,9 @@ def e_edr(t0, t1, eps):
     C = [[0] * (n1 + 1) for _ in range(n0 + 1)]
     for i in range(1, n0 + 1):
         for j in range(1, n1 + 1):
-            if eucl_dist(t0[i - 1], t1[j - 1]) < eps:
-                subcost = 0
-            else:
-                subcost = 1
+            subcost = 0 if eucl_dist(t0[i - 1], t1[j - 1]) < eps else 1
             C[i][j] = min(C[i][j - 1] + 1, C[i - 1][j] + 1, C[i - 1][j - 1] + subcost)
-    edr = float(C[n0][n1]) / max([n0, n1])
-    return edr
+    return float(C[n0][n1]) / max([n0, n1])
 
 
 ######################
@@ -70,5 +66,4 @@ def s_edr(t0, t1, eps):
             else:
                 subcost = 1
             C[i][j] = min(C[i][j - 1] + 1, C[i - 1][j] + 1, C[i - 1][j - 1] + subcost)
-    edr = float(C[n0][n1]) / max([n0, n1])
-    return edr
+    return float(C[n0][n1]) / max([n0, n1])

@@ -29,8 +29,10 @@ def e_directed_hausdorff(t1, t2, mdist, l_t1, l_t2, t2_dist):
     -------
     dh : float, directed hausdorff from trajectory t1 to trajectory t2
     """
-    dh = max([point_to_trajectory(t1[i1], t2, mdist[i1], t2_dist, l_t2) for i1 in range(l_t1)])
-    return dh
+    return max(
+        point_to_trajectory(t1[i1], t2, mdist[i1], t2_dist, l_t2)
+        for i1 in range(l_t1)
+    )
 
 
 def e_hausdorff(t1, t2):
@@ -54,9 +56,10 @@ def e_hausdorff(t1, t2):
     t1_dist = [eucl_dist(t1[it1], t1[it1 + 1]) for it1 in range(l_t1 - 1)]
     t2_dist = [eucl_dist(t2[it2], t2[it2 + 1]) for it2 in range(l_t2 - 1)]
 
-    h = max(e_directed_hausdorff(t1, t2, mdist, l_t1, l_t2, t2_dist),
-            e_directed_hausdorff(t2, t1, mdist.T, l_t2, l_t1, t1_dist))
-    return h
+    return max(
+        e_directed_hausdorff(t1, t2, mdist, l_t1, l_t2, t2_dist),
+        e_directed_hausdorff(t2, t1, mdist.T, l_t2, l_t1, t1_dist),
+    )
 
 
 ######################
@@ -123,6 +126,11 @@ def s_hausdorff(t0, t1):
     t0_dist = [great_circle_distance(lons0[it0], lats0[it0], lons0[it0 + 1], lats0[it0 + 1]) for it0 in range(n0 - 1)]
     t1_dist = [great_circle_distance(lons1[it1], lats1[it1], lons1[it1 + 1], lats1[it1 + 1]) for it1 in range(n1 - 1)]
 
-    h = max(s_directed_hausdorff(lons0, lats0, lons1, lats1, n0, n1, mdist, t0_dist),
-            s_directed_hausdorff(lons1, lats1, lons0, lats0, n1, n0, mdist.T, t1_dist))
-    return h
+    return max(
+        s_directed_hausdorff(
+            lons0, lats0, lons1, lats1, n0, n1, mdist, t0_dist
+        ),
+        s_directed_hausdorff(
+            lons1, lats1, lons0, lats0, n1, n0, mdist.T, t1_dist
+        ),
+    )

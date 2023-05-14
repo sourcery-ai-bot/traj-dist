@@ -19,8 +19,7 @@ def eucl_dist(x, y):
     dist : float
            L2-norm between x and y
     """
-    dist = np.linalg.norm(x - y)
-    return dist
+    return np.linalg.norm(x - y)
 
 
 def eucl_dist_traj(t1, t2):
@@ -39,8 +38,7 @@ def eucl_dist_traj(t1, t2):
     dist : float
            L2-norm between x and y
     """
-    mdist = cdist(t1, t2, 'euclidean')
-    return mdist
+    return cdist(t1, t2, 'euclidean')
 
 
 def point_to_seg(p, s1, s2, dps1, dps2, ds):
@@ -110,9 +108,12 @@ def point_to_trajectory(p, t, mdist_p, t_dist, l_t):
     dpt : float,
           Point-to-trajectory distance between p and trajectory t
     """
-    dpt = min(
-        [point_to_seg(p, t[it], t[it + 1], mdist_p[it], mdist_p[it + 1], t_dist[it]) for it in range(l_t - 1)])
-    return dpt
+    return min(
+        point_to_seg(
+            p, t[it], t[it + 1], mdist_p[it], mdist_p[it + 1], t_dist[it]
+        )
+        for it in range(l_t - 1)
+    )
 
 
 def circle_line_intersection(px, py, s1x, s1y, s2x, s2y, eps):
@@ -155,13 +156,11 @@ def circle_line_intersection(px, py, s1x, s1y, s2x, s2y, eps):
             x = -B / (2 * A)
             y = m * x + c
             intersect = np.array([[x, y], [x, y]])
-        elif delta > 0:
+        else:
             sdelta = math.sqrt(delta)
             x1 = (-B + sdelta) / (2 * A)
             y1 = m * x1 + c
             x2 = (-B - sdelta) / (2 * A)
             y2 = m * x2 + c
             intersect = np.array([[x1, y1], [x2, y2]])
-        else:
-            raise ValueError("The intersection between circle and line is supposed to exist")
     return intersect

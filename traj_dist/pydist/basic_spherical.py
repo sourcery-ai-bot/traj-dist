@@ -48,8 +48,7 @@ def great_circle_distance(lon1, lat1, lon2, lat2):
          math.cos(rad * lat1) * math.cos(rad * lat2) *
          math.sin(dlon / 2.0) * math.sin(dlon / 2.0))
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    d = R * c
-    return d
+    return R * c
 
 
 def great_circle_distance_traj(lons1, lats1, lons2, lats2, l1, l2):
@@ -103,9 +102,7 @@ def initial_bearing(lon1, lat1, lon2, lat2):
     y = math.sin(dlon) * math.cos(rad * (lat2))
     x = math.cos(rad * (lat1)) * math.sin(rad * (lat2)) - math.sin(rad * (lat1)) * math.cos(rad * (lat2)) * math.cos(
         dlon)
-    ibrng = math.atan2(y, x)
-
-    return ibrng
+    return math.atan2(y, x)
 
 def cross_track_point(lon1, lat1, lon2, lat2, lon3, lat3):
     '''Get the closest point on great circle path to the 3rd point
@@ -147,10 +144,7 @@ def cross_track_point(lon1, lat1, lon2, lat2, lon3, lat3):
     d1=great_circle_distance(lon1, lat1, lon3, lat3)
     d2=great_circle_distance(lon2, lat2, lon3, lat3)
 
-    if d1>d2:
-        return lon2, lat2
-    else:
-        return lon1, lat1
+    return (lon2, lat2) if d1>d2 else (lon1, lat1)
 
 def cross_track_distance(lon1, lat1, lon2, lat2, lon3, lat3, d13):
     """
@@ -178,9 +172,7 @@ def cross_track_distance(lon1, lat1, lon2, lat2, lon3, lat3, d13):
     theta13 = initial_bearing(lon1, lat1, lon3, lat3)  # bearing from start point to third point
     theta12 = initial_bearing(lon1, lat1, lon2, lat2)  # bearing from start point to end point
 
-    crt = math.asin(math.sin(d13 / R) * math.sin(theta13 - theta12)) * R
-
-    return crt
+    return math.asin(math.sin(d13 / R) * math.sin(theta13 - theta12)) * R
 
 
 def along_track_distance(crt, d13):
@@ -201,8 +193,7 @@ def along_track_distance(crt, d13):
          The along-track distance
     """
 
-    alt = math.acos(math.cos(d13 / R) / math.cos(crt / R)) * R
-    return alt
+    return math.acos(math.cos(d13 / R) / math.cos(crt / R)) * R
 
 
 def point_to_path(lon1, lat1, lon2, lat2, lon3, lat3, d13, d23, d12):
@@ -237,8 +228,4 @@ def point_to_path(lon1, lat1, lon2, lat2, lon3, lat3, d13, d23, d12):
     crt = cross_track_distance(lon1, lat1, lon2, lat2, lon3, lat3, d13)
     d1p = along_track_distance(crt, d13)
     d2p = along_track_distance(crt, d23)
-    if (d1p > d12) or (d2p > d12):
-        ptp = np.min((d13, d23))
-    else:
-        ptp = np.abs(crt)
-    return ptp
+    return np.min((d13, d23)) if (d1p > d12) or (d2p > d12) else np.abs(crt)

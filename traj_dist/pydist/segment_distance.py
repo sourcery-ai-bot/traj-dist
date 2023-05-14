@@ -42,9 +42,7 @@ def ordered_mixed_distance(si, ei, sj, ej, siei, sjej, siei_norm_2, sjej_norm_2)
     else:
         raise ValueError("WRONG THETA")
 
-    fdist = (dped + dpad + dad) / 3
-
-    return fdist
+    return (dped + dpad + dad) / 3
 
 
 def mixed_distance(si, ei, sj, ej):
@@ -54,12 +52,15 @@ def mixed_distance(si, ei, sj, ej):
     siei_norm_2 = (siei[0] * siei[0]) + (siei[1] * siei[1])
     sjej_norm_2 = (sjej[0] * sjej[0]) + (sjej[1] * sjej[1])
 
-    if sjej_norm_2 > siei_norm_2:
-        md = ordered_mixed_distance(sj, ej, si, ei, sjej, siei, sjej_norm_2, siei_norm_2)
-    else:
-        md = ordered_mixed_distance(si, ei, sj, ej, siei, sjej, siei_norm_2, sjej_norm_2)
-
-    return md
+    return (
+        ordered_mixed_distance(
+            sj, ej, si, ei, sjej, siei, sjej_norm_2, siei_norm_2
+        )
+        if sjej_norm_2 > siei_norm_2
+        else ordered_mixed_distance(
+            si, ei, sj, ej, siei, sjej, siei_norm_2, sjej_norm_2
+        )
+    )
 
 
 def segments_distance(traj_0, traj_1):

@@ -30,8 +30,13 @@ def e_spd(t1, t2, mdist, l_t1, l_t2, t2_dist):
            spd-distance of trajectory t2 from trajectory t1
     """
 
-    spd = sum([point_to_trajectory(t1[i1], t2, mdist[i1], t2_dist, l_t2) for i1 in range(l_t1)]) / l_t1
-    return spd
+    return (
+        sum(
+            point_to_trajectory(t1[i1], t2, mdist[i1], t2_dist, l_t2)
+            for i1 in range(l_t1)
+        )
+        / l_t1
+    )
 
 
 def e_sspd(t1, t2):
@@ -57,8 +62,10 @@ def e_sspd(t1, t2):
     t1_dist = [eucl_dist(t1[it1], t1[it1 + 1]) for it1 in range(l_t1 - 1)]
     t2_dist = [eucl_dist(t2[it2], t2[it2 + 1]) for it2 in range(l_t2 - 1)]
 
-    sspd = (e_spd(t1, t2, mdist, l_t1, l_t2, t2_dist) + e_spd(t2, t1, mdist.T, l_t2, l_t1, t1_dist)) / 2
-    return sspd
+    return (
+        e_spd(t1, t2, mdist, l_t1, l_t2, t2_dist)
+        + e_spd(t2, t1, mdist.T, l_t2, l_t1, t1_dist)
+    ) / 2
 
 
 ######################
@@ -129,6 +136,6 @@ def s_sspd(t0, t1):
     t0_dist = [great_circle_distance(lons0[it0], lats0[it0], lons0[it0 + 1], lats0[it0 + 1]) for it0 in range(n0 - 1)]
     t1_dist = [great_circle_distance(lons1[it1], lats1[it1], lons1[it1 + 1], lats1[it1 + 1]) for it1 in range(n1 - 1)]
 
-    dist = s_spd(lons0, lats0, lons1, lats1, n0, n1, mdist, t0_dist) + s_spd(lons1, lats1, lons0, lats0, n1, n0,
-                                                                             mdist.T, t1_dist)
-    return dist
+    return s_spd(lons0, lats0, lons1, lats1, n0, n1, mdist, t0_dist) + s_spd(
+        lons1, lats1, lons0, lats0, n1, n0, mdist.T, t1_dist
+    )

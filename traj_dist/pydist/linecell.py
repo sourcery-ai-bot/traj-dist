@@ -6,9 +6,7 @@ import numpy as np
 def linecell_lons_bigger_step(p1, p2, cell_start, lons_all, lats_all, lons_center_all, lats_center_all):
     reverse = False
     if p2[1] < p1[1]:
-        tmp = p1
-        p1 = p2
-        p2 = tmp
+        p1, p2 = p2, p1
         reverse = True
 
     lats_start_index = np.where(lats_all < p1[1])[0][-1]
@@ -35,11 +33,10 @@ def linecell_lons_bigger_step(p1, p2, cell_start, lons_all, lats_all, lons_cente
 
     if not reverse:
         cell = [cell_start]
+    elif order == "croissant":
+        cell = [[cell_start[0] - nlons, cell_start[1] - nlats]]
     else:
-        if order == "croissant":
-            cell = [[cell_start[0] - nlons, cell_start[1] - nlats]]
-        else:
-            cell = [[cell_start[0] + nlons, cell_start[1] - nlats]]
+        cell = [[cell_start[0] + nlons, cell_start[1] - nlats]]
 
     lons_inter = []
     for l in lons[1:-1]:
@@ -48,12 +45,10 @@ def linecell_lons_bigger_step(p1, p2, cell_start, lons_all, lats_all, lons_cente
 
     idx_lat = 0
     for p_int in lons_inter:
-        if p_int.y < lats[idx_lat + 1]:
-            cell.append([cell[-1][0] + idx_step, cell[-1][1]])
-        else:
+        if p_int.y >= lats[idx_lat + 1]:
             cell.append([cell[-1][0], cell[-1][1] + 1])
-            cell.append([cell[-1][0] + idx_step, cell[-1][1]])
             idx_lat += 1
+        cell.append([cell[-1][0] + idx_step, cell[-1][1]])
     if p2[1] > lats[idx_lat + 1]:
         cell.append([cell[-1][0], cell[-1][1] + 1])
     if reverse:
@@ -65,9 +60,7 @@ def linecell_lons_bigger_step(p1, p2, cell_start, lons_all, lats_all, lons_cente
 def linecell_lats_bigger_step(p1, p2, cell_start, lons_all, lats_all, lons_center_all, lats_center_all):
     reverse = False
     if p2[0] < p1[0]:
-        tmp = p1
-        p1 = p2
-        p2 = tmp
+        p1, p2 = p2, p1
         reverse = True
 
     lons_start_index = np.where(lons_all < p1[0])[0][-1]
@@ -94,11 +87,10 @@ def linecell_lats_bigger_step(p1, p2, cell_start, lons_all, lats_all, lons_cente
 
     if not reverse:
         cell = [cell_start]
+    elif order == "croissant":
+        cell = [[cell_start[0] - nlons, cell_start[1] - nlats]]
     else:
-        if order == "croissant":
-            cell = [[cell_start[0] - nlons, cell_start[1] - nlats]]
-        else:
-            cell = [[cell_start[0] - nlons, cell_start[1] + nlats]]
+        cell = [[cell_start[0] - nlons, cell_start[1] + nlats]]
 
     lats_inter = []
     for l in lats[1:-1]:
@@ -107,12 +99,10 @@ def linecell_lats_bigger_step(p1, p2, cell_start, lons_all, lats_all, lons_cente
 
     idx_lon = 0
     for p_int in lats_inter:
-        if p_int.x < lons[idx_lon + 1]:
-            cell.append([cell[-1][0], cell[-1][1] + idx_step])
-        else:
+        if p_int.x >= lons[idx_lon + 1]:
             cell.append([cell[-1][0] + 1, cell[-1][1]])
-            cell.append([cell[-1][0], cell[-1][1] + idx_step])
             idx_lon += 1
+        cell.append([cell[-1][0], cell[-1][1] + idx_step])
     if p2[0] > lons[idx_lon + 1]:
         cell.append([cell[-1][0] + 1, cell[-1][1]])
     if reverse:
@@ -169,22 +159,18 @@ def trajectory_set_grid(traj_set, precision, time=False):
             if time:
                 if not cells:
                     cell_time = [cell[0] + [True, [cell_start_time]]]
+                elif cell[0] == cells[-1][:2]:
+                    cells[-1][3].append(cell_start_time)
+                    cell_time = []
                 else:
-                    if cell[0] == cells[-1][:2]:
-                        cells[-1][3].append(cell_start_time)
-                        cell_time = []
-                    else:
-                        cell_time = [cell[0] + [True, [cell_start_time]]]
-                cell_time = cell_time + [x + [False, -1] for x in cell[1:-1]]
+                    cell_time = [cell[0] + [True, [cell_start_time]]]
+                cell_time += [x + [False, -1] for x in cell[1:-1]]
             else:
                 if not cells:
                     cell_time = [cell[0] + [True]]
                 else:
-                    if cell[0] == cells[-1][:2]:
-                        cell_time = []
-                    else:
-                        cell_time = [cell[0] + [True]]
-                cell_time = cell_time + [x + [False] for x in cell[1:-1]]
+                    cell_time = [] if cell[0] == cells[-1][:2] else [cell[0] + [True]]
+                cell_time += [x + [False] for x in cell[1:-1]]
 
             cells.extend(cell_time)
             cell_start = cell[-1]
@@ -194,9 +180,8 @@ def trajectory_set_grid(traj_set, precision, time=False):
                 cells[-1][3].append(cell_end_time)
             else:
                 cells.append(cell_start + [True, [cell_end_time]])
-        else:
-            if cell_start != cells[-1][:2]:
-                cells.append(cell_start + [True])
+        elif cell_start != cells[-1][:2]:
+            cells.append(cell_start + [True])
         cells_traj.append(cells)
     # cells_traj_=map(np.array,cells_traj)
     return cells_traj, lons_all, lats_all, lons_center_all, lats_center_all

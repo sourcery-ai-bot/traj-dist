@@ -13,7 +13,7 @@ time_dict = collections.defaultdict(dict)
 for distance in ["sspd", "frechet", "discret_frechet", "hausdorff", "dtw", "lcss", "edr", "erp"]:
     t_euclidean = timeit.timeit(lambda: tdist.pdist(traj_list, metric=distance), number=1)
 
-    if not (distance in ["frechet", "discret_frechet"]):
+    if distance not in ["frechet", "discret_frechet"]:
         t_spherical = timeit.timeit(
             lambda: tdist.pdist(traj_list, metric=distance, type_d="spherical"),  number=1)
     else:

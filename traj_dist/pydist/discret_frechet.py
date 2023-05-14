@@ -25,5 +25,4 @@ def discret_frechet(t0, t1):
     for i in np.arange(n0) + 1:
         for j in np.arange(n1) + 1:
             C[i, j] = max(eucl_dist(t0[i - 1], t1[j - 1]), min(C[i, j - 1], C[i - 1, j - 1], C[i - 1, j]))
-    dtw = C[n0, n1]
-    return dtw
+    return C[n0, n1]

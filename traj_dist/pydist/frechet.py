@@ -34,41 +34,37 @@ def free_line(p, eps, s, dps1, dps2, ds):
     s2x = s[1, 0]
     s2y = s[1, 1]
     if s1x == s2x and s1y == s2y:
-        if eucl_dist(p, s[0]) > eps:
-            lf = [-1, -1]
-        else:
-            lf = [0, 1]
+        lf = [-1, -1] if eucl_dist(p, s[0]) > eps else [0, 1]
+    elif point_to_seg(p, s[0], s[1], dps1, dps2, ds) > eps:
+        # print("No Intersection")
+        lf = [-1, -1]
     else:
-        if point_to_seg(p, s[0], s[1], dps1, dps2, ds) > eps:
-            # print("No Intersection")
-            lf = [-1, -1]
-        else:
-            segl = eucl_dist(s[0], s[1])
-            segl2 = segl * segl
-            intersect = circle_line_intersection(px, py, s1x, s1y, s2x, s2y, eps)
-            if intersect[0][0] != intersect[1][0] or intersect[0][1] != intersect[1][1]:
-                i1x = intersect[0, 0]
-                i1y = intersect[0, 1]
-                u1 = (((i1x - s1x) * (s2x - s1x)) + ((i1y - s1y) * (s2y - s1y))) / segl2
-
-                i2x = intersect[1, 0]
-                i2y = intersect[1, 1]
-                u2 = (((i2x - s1x) * (s2x - s1x)) + ((i2y - s1y) * (s2y - s1y))) / segl2
-                ordered_point = sorted((0, 1, u1, u2))
-                lf = ordered_point[1:3]
+        segl = eucl_dist(s[0], s[1])
+        segl2 = segl * segl
+        intersect = circle_line_intersection(px, py, s1x, s1y, s2x, s2y, eps)
+        if (
+            intersect[0][0] == intersect[1][0]
+            and intersect[0][1] == intersect[1][1]
+        ):
+            if px == s1x and py == s1y:
+                lf = [0, 0]
+            elif px == s2x and py == s2y:
+                lf = [1, 1]
             else:
-                if px == s1x and py == s1y:
-                    lf = [0, 0]
-                elif px == s2x and py == s2y:
-                    lf = [1, 1]
-                else:
-                    i1x = intersect[0][0]
-                    i1y = intersect[0][1]
-                    u1 = (((i1x - s1x) * (s2x - s1x)) + ((i1y - s1y) * (s2y - s1y))) / segl2
-                    if 0 <= u1 <= 1:
-                        lf = [u1, u1]
-                    else:
-                        lf = [-1, -1]
+                i1x = intersect[0][0]
+                i1y = intersect[0][1]
+                u1 = (((i1x - s1x) * (s2x - s1x)) + ((i1y - s1y) * (s2y - s1y))) / segl2
+                lf = [u1, u1] if 0 <= u1 <= 1 else [-1, -1]
+        else:
+            i1x = intersect[0, 0]
+            i1y = intersect[0, 1]
+            u1 = (((i1x - s1x) * (s2x - s1x)) + ((i1y - s1y) * (s2y - s1y))) / segl2
+
+            i2x = intersect[1, 0]
+            i2y = intersect[1, 1]
+            u2 = (((i2x - s1x) * (s2x - s1x)) + ((i2y - s1y) * (s2y - s1y))) / segl2
+            ordered_point = sorted((0, 1, u1, u2))
+            lf = ordered_point[1:3]
     return lf
 
 
@@ -99,11 +95,25 @@ def LF_BF(P, Q, p, q, eps, mdist, P_dist, Q_dist):
     LF = {}
     for j in range(q):
         for i in range(p - 1):
-            LF.update({(i, j): free_line(Q[j], eps, P[i:i + 2], mdist[i, j], mdist[i + 1, j], P_dist[i])})
+            LF[(i, j)] = free_line(
+                Q[j],
+                eps,
+                P[i : i + 2],
+                mdist[i, j],
+                mdist[i + 1, j],
+                P_dist[i],
+            )
     BF = {}
     for j in range(q - 1):
         for i in range(p):
-            BF.update({(i, j): free_line(P[i], eps, Q[j:j + 2], mdist[i, j], mdist[i, j + 1], Q_dist[j])})
+            BF[(i, j)] = free_line(
+                P[i],
+                eps,
+                Q[j : j + 2],
+                mdist[i, j],
+                mdist[i, j + 1],
+                Q_dist[j],
+            )
     return LF, BF
 
 
@@ -130,7 +140,12 @@ def LR_BR(LF, BF, p, q):
     LR : dict, is the free space, reachable from the origin, of segments of P from points of Q
     BR : dict, is the free space, reachable from the origin, of segments of Q from points of P
     """
-    if not (LF[(0, 0)][0] <= 0 and BF[(0, 0)][0] <= 0 and LF[(p - 2, q - 1)][1] >= 1 and BF[(p - 1, q - 2)][1] >= 1):
+    if (
+        LF[(0, 0)][0] > 0
+        or BF[(0, 0)][0] > 0
+        or LF[(p - 2, q - 1)][1] < 1
+        or BF[(p - 1, q - 2)][1] < 1
+    ):
         rep = False
         BR = {}
         LR = {}
@@ -138,26 +153,14 @@ def LR_BR(LF, BF, p, q):
         LR = {(0, 0): True}
         BR = {(0, 0): True}
         for i in range(1, p - 1):
-            if LF[(i, 0)] != [-1, -1] and LF[(i - 1, 0)] == [0, 1]:
-                LR[(i, 0)] = True
-            else:
-                LR[(i, 0)] = False
+            LR[(i, 0)] = LF[(i, 0)] != [-1, -1] and LF[(i - 1, 0)] == [0, 1]
         for j in range(1, q - 1):
-            if BF[(0, j)] != [-1, -1] and BF[(0, j - 1)] == [0, 1]:
-                BR[(0, j)] = True
-            else:
-                BR[(0, j)] = False
+            BR[(0, j)] = BF[(0, j)] != [-1, -1] and BF[(0, j - 1)] == [0, 1]
         for i in range(p - 1):
             for j in range(q - 1):
                 if LR[(i, j)] or BR[(i, j)]:
-                    if LF[(i, j + 1)] != [-1, -1]:
-                        LR[(i, j + 1)] = True
-                    else:
-                        LR[(i, j + 1)] = False
-                    if BF[(i + 1, j)] != [-1, -1]:
-                        BR[(i + 1, j)] = True
-                    else:
-                        BR[(i + 1, j)] = False
+                    LR[(i, j + 1)] = LF[(i, j + 1)] != [-1, -1]
+                    BR[(i + 1, j)] = BF[(i + 1, j)] != [-1, -1]
                 else:
                     LR[(i, j + 1)] = False
                     BR[(i + 1, j)] = False
@@ -214,7 +217,7 @@ def compute_critical_values(P, Q, p, q, mdist, P_dist, Q_dist):
     origin = eucl_dist(P[0], Q[0])
     end = eucl_dist(P[-1], Q[-1])
     end_point = max(origin, end)
-    cc = set([end_point])
+    cc = {end_point}
     for i in range(p - 1):
         for j in range(q - 1):
             Lij = point_to_seg(Q[j], P[i], P[i + 1], mdist[i, j], mdist[i + 1, j], P_dist[i])
@@ -253,10 +256,8 @@ def frechet(P, Q):
     while (len(cc) != 1):
         m_i = len(cc) / 2 - 1
         eps = cc[m_i]
-        rep = decision_problem(P, Q, p, q, eps, mdist, P_dist, Q_dist)
-        if rep:
+        if rep := decision_problem(P, Q, p, q, eps, mdist, P_dist, Q_dist):
             cc = cc[:m_i + 1]
         else:
             cc = cc[m_i + 1:]
-    frech = eps
-    return frech
+    return eps
